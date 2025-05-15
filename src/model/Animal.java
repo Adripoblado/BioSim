@@ -3,6 +3,14 @@ package model;
 import java.util.Random;
 
 public class Animal extends Organism {
+	
+	/* TODO: IDEAS
+	 *  - Sex distinction (male and female)
+	 *  - Advanced attributes (attack, defense, aggressiveness, speed)
+	 *  - Smart encounters depending on attributes (reproduction, fight)
+	 *  - Family recognition
+	 *  - Team formation (think about more attributes)
+	 */
 
 	private static final int INITIAL_ENERGY = 30;
 	private static final int ENERGY_PER_MOVEMENT = 1;
@@ -10,9 +18,10 @@ public class Animal extends Organism {
 	private static final int REPRODUCTION_ENERGY_COST = 25;
 	private Random random;
 
-	public Animal(World world, int x, int y, int initialEnergy) {
-		super(world, x, y, initialEnergy);
+	public Animal(World world, int x, int y) {
+		super(world, x, y, INITIAL_ENERGY);
 		this.random = new Random();
+		this.energy = INITIAL_ENERGY;
 	}
 
 	@Override
@@ -21,7 +30,10 @@ public class Animal extends Organism {
 
 		if (this.energy <= 0) {
 			this.die();
+			return;
 		}
+
+		move();
 	}
 
 	private void move() {
@@ -37,6 +49,9 @@ public class Animal extends Organism {
 			moveX = 1;
 			break;
 		}
+		default: {
+			break;
+		}
 		}
 
 		switch (moveY) {
@@ -46,6 +61,9 @@ public class Animal extends Organism {
 		}
 		case 1: {
 			moveY = 1;
+			break;
+		}
+		default: {
 			break;
 		}
 		}
@@ -67,20 +85,33 @@ public class Animal extends Organism {
 	}
 
 	public void eat() {
-		Object organism = this.world.getOrganismOn(this.x, this.y); // TODO: create method to retrieve organism
+		Object organism = this.world.getOrganismOn(this.x, this.y);
 		if (organism.getClass() == Plant.class) {
 			Plant plant = (Plant) organism;
 			if (plant.isAlive()) {
 				this.energy += plant.beEaten();
-				// TODO: remove plant from square in World.class
 			}
 		}
 	}
 
-	public void reproduce() {
+	public void reproduce() { // TODO: improve so only reproduce when other animal is nearby
 		if (this.energy >= REPRODUCTION_ENERGY_BEGINNING) {
+			if (world.isPositionValid(this.x + 1, this.y + 1) && world.isThereFreeSpace(this.x + 1, this.y + 1)) {
+				world.addOrganism(new Animal(world, this.x + 1, this.y + 1));
+			} else if (world.isPositionValid(this.x + 1, this.y - 1)
+					&& world.isThereFreeSpace(this.x + 1, this.y - 1)) {
+				world.addOrganism(new Animal(world, this.x + 1, this.y - 1));
+			} else if (world.isPositionValid(this.x - 1, this.y + 1)
+					&& world.isThereFreeSpace(this.x - 1, this.y + 1)) {
+				world.addOrganism(new Animal(world, this.x - 1, this.y + 1));
+			} else if (world.isPositionValid(this.x - 1, this.y - 1)
+					&& world.isThereFreeSpace(this.x - 1, this.y - 1)) {
+				world.addOrganism(new Animal(world, this.x - 1, this.y - 1));
+			} else {
+				return;
+			}
+
 			this.energy -= REPRODUCTION_ENERGY_COST;
-			// TODO: create new animal on random side field
 		}
 	}
 }

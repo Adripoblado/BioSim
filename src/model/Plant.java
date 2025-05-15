@@ -6,8 +6,8 @@ public class Plant extends Organism {
 	private static final int MAX_ENERGY = 50;
 	private static final int GROWTH_RATE = 1;
 
-	public Plant(World world, int x, int y, int initialEnergy) {
-		super(world, x, y, initialEnergy);
+	public Plant(World world, int x, int y) {
+		super(world, x, y, INITIAL_ENERGY);
 		this.energy = INITIAL_ENERGY;
 	}
 	

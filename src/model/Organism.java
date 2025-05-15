@@ -16,7 +16,7 @@ public abstract class Organism {
 	}
 	
 	public void update() {
-		
+		//TODO
 	}
 	
 	public void spendEnergy(int amount) {

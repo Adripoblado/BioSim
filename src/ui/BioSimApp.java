@@ -29,7 +29,7 @@ public class BioSimApp extends Application {
 
 	private long lastUpdate = 0;
 
-	private static final int STEPS_PER_SECOND = 1;
+	private static final int STEPS_PER_SECOND = 12;
 	private static final long UPDATE_NANO_GAP = 1_000_000_000 / STEPS_PER_SECOND;
 
 	public static void main(String[] args) {
@@ -43,7 +43,7 @@ public class BioSimApp extends Application {
 		simulator = new Simulator(this);
 
 		BorderPane root = new BorderPane();
-		canvas = new Canvas(World.DEFAULT_WIDTH * CELL_SIZE, World.DEFAULT_HEIGHT + CELL_SIZE);
+		canvas = new Canvas(World.DEFAULT_WIDTH * CELL_SIZE, World.DEFAULT_HEIGHT * CELL_SIZE);
 		gc = canvas.getGraphicsContext2D();
 		root.setCenter(canvas);
 

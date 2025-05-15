@@ -14,6 +14,8 @@ public class World implements Serializable {
 	private int width, height;
 	private Organism[][] grid;
 	private List<Organism> organisms;
+	private List<Plant> plants;
+	private List<Animal> animals;
 	private List<Organism> newOrganisms;
 	private Random random;
 
@@ -28,6 +30,8 @@ public class World implements Serializable {
 		this.random = new Random();
 		this.grid = new Organism[this.width][this.height];
 		this.organisms = new ArrayList<Organism>();
+		this.plants = new ArrayList<Plant>();
+		this.animals = new ArrayList<Animal>();
 	}
 
 	public void populate(int numPlants, int numAnimals) {
@@ -49,6 +53,7 @@ public class World implements Serializable {
 			Plant plant = new Plant(this, width, height);
 			grid[width][height] = plant;
 			organisms.add(plant);
+			plants.add(plant);
 		}
 
 		for (int n = 0; n < numAnimals; n++) {
@@ -61,6 +66,7 @@ public class World implements Serializable {
 			Animal animal = new Animal(this, width, height);
 			grid[width][height] = animal;
 			organisms.add(animal);
+			animals.add(animal);
 		}
 	}
 
@@ -68,12 +74,21 @@ public class World implements Serializable {
 		List<Organism> deadOrganisms = new ArrayList<Organism>();
 
 		for (Organism organism : organisms) {
-			organism.update();
-
 			if (!organism.isAlive()) {
+				if (organism.getClass() == Animal.class) {
+					animals.remove(organism);
+					System.out.println("An animal died, " + animals.size() + " remaining");
+				} else {
+					plants.remove(organism);
+					System.out.println("A plant died, " + plants.size() + " remaining");
+				}
 				deadOrganisms.add(organism);
 			}
+
+			organism.update();
 		}
+		
+		organisms.removeAll(deadOrganisms);
 
 		for (Organism organism : deadOrganisms) {
 			grid[organism.getX()][organism.getY()] = null;
@@ -112,15 +127,15 @@ public class World implements Serializable {
 		grid[previousWidth][previousHeight] = null;
 		grid[newWidth][newHeight] = organism;
 	}
-	
+
 	public int getWidth() {
 		return this.width;
 	}
-	
+
 	public int getHeight() {
 		return this.height;
 	}
-	
+
 	public List<Organism> getOrganisms() {
 		return this.organisms;
 	}

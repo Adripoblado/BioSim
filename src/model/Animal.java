@@ -3,13 +3,12 @@ package model;
 import java.util.Random;
 
 public class Animal extends Organism {
-	
-	/* TODO: IDEAS
-	 *  - Sex distinction (male and female)
-	 *  - Advanced attributes (attack, defense, aggressiveness, speed)
-	 *  - Smart encounters depending on attributes (reproduction, fight)
-	 *  - Family recognition
-	 *  - Team formation (think about more attributes)
+
+	/*
+	 * TODO: IDEAS - Sex distinction (male and female) - Advanced attributes
+	 * (attack, defense, aggressiveness, speed) - Smart encounters depending on
+	 * attributes (reproduction, fight) - Family recognition - Team formation (think
+	 * about more attributes)
 	 */
 
 	private static final int INITIAL_ENERGY = 30;
@@ -34,11 +33,15 @@ public class Animal extends Organism {
 		}
 
 		move();
+		Organism organismOnDestination = world.getOrganismOn(x, y);
+		if (organismOnDestination != null && organismOnDestination.getClass() == Plant.class) {
+			eat(organismOnDestination);
+		}
 	}
 
 	private void move() {
-		int moveX = this.random.nextInt(1);
-		int moveY = this.random.nextInt(1);
+		int moveX = this.random.nextInt(2);
+		int moveY = this.random.nextInt(2);
 
 		switch (moveX) {
 		case 0: {
@@ -70,13 +73,13 @@ public class Animal extends Organism {
 
 		if (this.x <= 0 && moveX == -1) {
 			moveX = 1;
-		} else if (this.x >= 99 && moveX == 1) {
+		} else if (this.x >= world.getWidth() - 1 && moveX == 1) {
 			moveX = -1;
 		}
 
 		if (this.y <= 0 && moveY == -1) {
 			moveY = 1;
-		} else if (this.y >= 99 && moveY == 1) {
+		} else if (this.y >= world.getHeight() - 1 && moveY == 1) {
 			moveY = -1;
 		}
 
@@ -84,13 +87,11 @@ public class Animal extends Organism {
 		this.y += moveY;
 	}
 
-	public void eat() {
-		Object organism = this.world.getOrganismOn(this.x, this.y);
-		if (organism.getClass() == Plant.class) {
-			Plant plant = (Plant) organism;
-			if (plant.isAlive()) {
-				this.energy += plant.beEaten();
-			}
+	public void eat(Organism organism) {
+		Plant plant = (Plant) organism;
+		if (plant.isAlive()) {
+			int plantEnergy = plant.beEaten();
+			this.energy += plantEnergy;
 		}
 	}
 

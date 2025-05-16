@@ -137,12 +137,12 @@ public class BioSimApp extends Application {
 			}
 
 			if (org instanceof Plant) {
-//				Plant plant = (Plant) org;
-//				if(plant.grownFromSeed()) {
-//					gc.setFill(Color.DARKGREEN);
-//				} else {
+				Plant plant = (Plant) org;
+				if (plant.grownFromSeed()) {
+					gc.setFill(Color.DARKGREEN);
+				} else {
 					gc.setFill(Color.GREEN);
-//				}
+				}
 			} else if (org instanceof Animal) {
 				gc.setFill(Color.BLUE);
 			} else {

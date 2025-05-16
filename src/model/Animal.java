@@ -11,7 +11,7 @@ public class Animal extends Organism {
 	 * about more attributes)
 	 */
 
-	private static final int INITIAL_ENERGY = 30;
+	private static final int INITIAL_ENERGY = 50;
 	private static final int ENERGY_PER_MOVEMENT = 1;
 	private static final int REPRODUCTION_ENERGY_BEGINNING = 50;
 	private static final int REPRODUCTION_ENERGY_COST = 25;

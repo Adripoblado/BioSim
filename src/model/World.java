@@ -129,6 +129,7 @@ public class World implements Serializable {
 
 	public void addOrganism(Organism organism) {
 		grid[organism.getX()][organism.getY()].addOrganism(organism);
+		organisms.add(organism);
 	}
 
 	public void moveOrganismOnGrid(Organism organism, int previousWidth, int previousHeight, int newWidth,

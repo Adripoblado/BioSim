@@ -55,7 +55,7 @@ public class BioSimApp extends Application {
 				resumePauseButton.setText("Resume");
 			} else {
 				if (simulator.getWorld() == null) {
-					simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 150, 20);
+					simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 150, 10);
 				} else {
 					simulator.resume();
 				}
@@ -72,7 +72,7 @@ public class BioSimApp extends Application {
 			}
 
 			simulator.pause();
-			simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 150, 20);
+			simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 150, 10);
 			if (!simulator.isExecuting() && simulator.getWorld() != null) {
 				simulator.resume();
 				gameLoop.start();
@@ -137,7 +137,12 @@ public class BioSimApp extends Application {
 			}
 
 			if (org instanceof Plant) {
-				gc.setFill(Color.GREEN);
+//				Plant plant = (Plant) org;
+//				if(plant.grownFromSeed()) {
+//					gc.setFill(Color.DARKGREEN);
+//				} else {
+					gc.setFill(Color.GREEN);
+//				}
 			} else if (org instanceof Animal) {
 				gc.setFill(Color.BLUE);
 			} else {

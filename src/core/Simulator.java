@@ -15,6 +15,7 @@ public class Simulator {
 	
 	public void init(int worldWidht, int worldHeight, int plantNum, int animalNum) {
 		world = new World(worldWidht, worldHeight);
+		System.out.println("Intializing World with " + animalNum + " animals");
 		world.populate(plantNum, animalNum);
 		
 		executing = true;
@@ -23,7 +24,7 @@ public class Simulator {
 	public void step() {
 		if (executing) {
 			world.updateSimulation();
-			uiUpdater.updateUI(); // TODO
+			uiUpdater.updateUI(); 
 		}
 	}
 	

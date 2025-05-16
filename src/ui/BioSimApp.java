@@ -20,7 +20,7 @@ public class BioSimApp extends Application {
 
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEHGHT = 800;
-	private static final int CELL_SIZE = 10;
+	private static final int CELL_SIZE = 4;
 
 	private Simulator simulator;
 	private Canvas canvas;
@@ -29,7 +29,7 @@ public class BioSimApp extends Application {
 
 	private long lastUpdate = 0;
 
-	private static final int STEPS_PER_SECOND = 12;
+	private static final int STEPS_PER_SECOND = 32;
 	private static final long UPDATE_NANO_GAP = 1_000_000_000 / STEPS_PER_SECOND;
 
 	public static void main(String[] args) {
@@ -55,7 +55,7 @@ public class BioSimApp extends Application {
 				resumePauseButton.setText("Resume");
 			} else {
 				if (simulator.getWorld() == null) {
-					simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 150, 10);
+					simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 500, 25);
 				} else {
 					simulator.resume();
 				}
@@ -72,7 +72,7 @@ public class BioSimApp extends Application {
 			}
 
 			simulator.pause();
-			simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 150, 10);
+			simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 500, 25);
 			if (!simulator.isExecuting() && simulator.getWorld() != null) {
 				simulator.resume();
 				gameLoop.start();
@@ -92,11 +92,13 @@ public class BioSimApp extends Application {
 			@Override
 			public void handle(long now) {
 				if (now - lastUpdate >= UPDATE_NANO_GAP) {
+					System.out.println("Before " + lastUpdate);
 					if (simulator.isExecuting()) {
 						simulator.step();
 						updateUI();
 					}
 					lastUpdate = now;
+					System.out.println("After " + lastUpdate);
 				}
 			}
 		};
@@ -113,7 +115,7 @@ public class BioSimApp extends Application {
 		updateUI();
 	}
 
-	public void updateUI() {
+	public void updateUI() { // TODO: Check crash here 2
 		if (simulator == null || simulator.getWorld() == null) {
 			gc.setFill(Color.LIGHTGRAY);
 			gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());

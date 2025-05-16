@@ -8,6 +8,8 @@ public class Field {
 	/*
 	 * TODO: IDEAS - Smell trace so hunting animals can trace other animals back -
 	 * Seed spreading - Pollution / toxins
+	 * 
+	 * NEED to handle humidity to lower the seed growing rate
 	 */
 
 	private final int x;
@@ -83,7 +85,6 @@ public class Field {
 			double probability = calculatePlantGenerationProbability();
 
 			if (random.nextDouble() < probability) {
-				System.out.println("New Plant has raised on " + this.x + "-" + this.y);
 				Plant newPlant = new Plant(this.world, this.x, this.y, true);
 				this.addOrganism(newPlant);
 				world.addOrganism(newPlant);
@@ -93,8 +94,7 @@ public class Field {
 
 	public double calculatePlantGenerationProbability() {
 		if (hasSeed) {
-			System.out.println(BASE_FERTILITY /* humidityLevel */* nutrientLevel);
-			return BASE_FERTILITY /* humidityLevel */* nutrientLevel;
+			return BASE_FERTILITY * 0.02 /* humidityLevel */* nutrientLevel;
 		} else {
 			return 0.0;
 		}

@@ -9,12 +9,14 @@ public class Animal extends Organism {
 	 * (attack, defense, aggressiveness, speed) - Smart encounters depending on
 	 * attributes (reproduction, fight) - Family recognition - Team formation (think
 	 * about more attributes)
+	 * 
+	 * NEED to compensate lifetime
 	 */
 
-	private static final int INITIAL_ENERGY = 50;
+	private static final int INITIAL_ENERGY = 100;
 	private static final int ENERGY_PER_MOVEMENT = 1;
-	private static final int REPRODUCTION_ENERGY_BEGINNING = 50;
-	private static final int REPRODUCTION_ENERGY_COST = 25;
+	private static final int REPRODUCTION_ENERGY_BEGINNING = 80;
+	private static final int REPRODUCTION_ENERGY_COST = 40;
 	private Random random;
 
 	public Animal(World world, int x, int y) {

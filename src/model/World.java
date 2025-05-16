@@ -11,11 +11,13 @@ public class World implements Serializable {
 	 * TODO: IDEAS - Weather (rain, snow, dry stations, temperatures) - Stations
 	 * (advanced weather sessions) - Plant growing (randomly at first, then use
 	 * weather and stations) - Natural disasters (long term idea)
+	 * 
+	 * NEED to implement weather events ASAP
 	 */
 
-	private static final long serialVersionUID = 658023946262118355L;
-	public static final int DEFAULT_WIDTH = 50;
-	public static final int DEFAULT_HEIGHT = 50;
+	private static final long serialVersionUID = 658023946262118355L;	
+	public static final int DEFAULT_WIDTH = 100;
+	public static final int DEFAULT_HEIGHT = 100;
 
 	private int width, height;
 	private Field[][] grid;
@@ -77,7 +79,7 @@ public class World implements Serializable {
 		}
 	}
 
-	public void updateSimulation() {
+	public void updateSimulation() { // TODO: Check crash here
 		List<Organism> deadOrganisms = new ArrayList<Organism>();
 //		List<Plant> plantsToTransform = new ArrayList<Plant>();
 		
@@ -130,6 +132,8 @@ public class World implements Serializable {
 	public void addOrganism(Organism organism) {
 		grid[organism.getX()][organism.getY()].addOrganism(organism);
 		organisms.add(organism);
+		
+		System.out.println("Organisms: " + organisms.size());
 	}
 
 	public void moveOrganismOnGrid(Organism organism, int previousWidth, int previousHeight, int newWidth,

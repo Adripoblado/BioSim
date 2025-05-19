@@ -6,11 +6,11 @@ import javafx.application.Platform;
 
 public class Plant extends Organism {
 
-	private static final int INITIAL_ENERGY = 5;
-	private static final int MAX_ENERGY = 50;
+	private static final int INITIAL_ENERGY = 40;
+	private static final int MAX_ENERGY = 120;
 	private static final int GROWTH_RATE = 1;
-	private static final double SEED_CHANCE = 0.05;
-	private static final double SEED_COST = 30;
+	private static final double SEED_CHANCE = 0.14;
+	private static final double SEED_COST = 50;
 
 	private Random random;
 
@@ -33,7 +33,7 @@ public class Plant extends Organism {
 			}
 		}
 
-		if (energy == MAX_ENERGY) {
+		if (energy >= MAX_ENERGY * 0.8) {
 			if (random.nextDouble() < SEED_CHANCE) {
 				energy -= SEED_COST;
 

@@ -15,7 +15,7 @@ public class Animal extends Organism {
 	 * NEED to compensate lifetime
 	 */
 
-	private static final int INITIAL_ENERGY = 100;
+	private static final int INITIAL_ENERGY = 200;
 	private static final int ENERGY_PER_MOVEMENT = 1;
 	private static final int REPRODUCTION_ENERGY_BEGINNING = 80;
 	private static final int REPRODUCTION_ENERGY_COST = 40;
@@ -29,13 +29,6 @@ public class Animal extends Organism {
 
 	@Override
 	public synchronized void update() {
-		this.energy -= ENERGY_PER_MOVEMENT;
-
-		if (this.energy <= 0) {
-			this.die();
-			return;
-		}
-
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -43,14 +36,20 @@ public class Animal extends Organism {
 			}
 		});
 
-		Organism organismOnDestination = world.getOrganismOn(x, y);
-		if (organismOnDestination != null && organismOnDestination instanceof Plant) {
-			eat(organismOnDestination);
+		Plant plant = world.getPlantAt(x, y);
+		if (plant != null) {
+			eat(plant);
+		}
+	
+		this.energy -= ENERGY_PER_MOVEMENT;
+
+		if (this.energy <= 0) {
+			this.die();
+			return;
 		}
 	}
 
 	private synchronized void move() {
-
 		int moveX = 0;
 		int moveY = 0;
 
@@ -65,8 +64,7 @@ public class Animal extends Organism {
 
 	}
 
-	public synchronized void eat(Organism organism) {
-		Plant plant = (Plant) organism;
+	public synchronized void eat(Plant plant) {
 		if (plant.isAlive()) {
 			int plantEnergy = plant.beEaten();
 			this.energy += plantEnergy;

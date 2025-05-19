@@ -120,6 +120,10 @@ public class World implements Serializable {
 			return null;
 		}
 	}
+	
+	public synchronized Plant getPlantAt(int x, int y) {
+		return grid[x][y].getPlant();
+	}
 
 	public boolean isPositionValid(int width, int height) {
 		if (width < this.width && width >= 0 && height < this.height && height >= 0) {

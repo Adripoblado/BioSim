@@ -55,7 +55,7 @@ public class BioSimApp extends Application {
 				resumePauseButton.setText("Resume");
 			} else {
 				if (simulator.getWorld() == null) {
-					simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 500, 25);
+					simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 1200, 16);
 				} else {
 					simulator.resume();
 				}
@@ -72,7 +72,7 @@ public class BioSimApp extends Application {
 			}
 
 			simulator.pause();
-			simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 500, 25);
+			simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, 1000, 20);
 			if (!simulator.isExecuting() && simulator.getWorld() != null) {
 				simulator.resume();
 				gameLoop.start();
@@ -106,7 +106,7 @@ public class BioSimApp extends Application {
 		}.start();
 		
 
-		Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEHGHT);
+		Scene scene = new Scene(root, 400, 450);
 		primaryStage.setScene(scene);
 		primaryStage.setOnCloseRequest(event -> {
 			if (gameLoop != null) {

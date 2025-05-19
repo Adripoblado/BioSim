@@ -2,6 +2,8 @@ package model;
 
 import java.util.Random;
 
+import javafx.application.Platform;
+
 public class Animal extends Organism {
 
 	/*
@@ -26,7 +28,7 @@ public class Animal extends Organism {
 	}
 
 	@Override
-	public void update() {
+	public synchronized void update() {
 		this.energy -= ENERGY_PER_MOVEMENT;
 
 		if (this.energy <= 0) {
@@ -34,62 +36,36 @@ public class Animal extends Organism {
 			return;
 		}
 
-		move();
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				move();
+			}
+		});
+
 		Organism organismOnDestination = world.getOrganismOn(x, y);
-		if (organismOnDestination != null && organismOnDestination.getClass() == Plant.class) {
+		if (organismOnDestination != null && organismOnDestination instanceof Plant) {
 			eat(organismOnDestination);
 		}
 	}
 
-	private void move() {
-		int moveX = this.random.nextInt(2);
-		int moveY = this.random.nextInt(2);
+	private synchronized void move() {
 
-		switch (moveX) {
-		case 0: {
-			moveX = -1;
-			break;
-		}
-		case 1: {
-			moveX = 1;
-			break;
-		}
-		default: {
-			break;
-		}
-		}
+		int moveX = 0;
+		int moveY = 0;
 
-		switch (moveY) {
-		case 0: {
-			moveY = -1;
-			break;
-		}
-		case 1: {
-			moveY = 1;
-			break;
-		}
-		default: {
-			break;
-		}
-		}
+		do {
+			int[] newCoords = moveCoordinates(this.x, this.y, random, 3);
+			moveX = newCoords[0];
+			moveY = newCoords[1];
+		} while (world.getOrganismOn(moveX, moveY) instanceof Animal);
 
-		if (this.x <= 0 && moveX == -1) {
-			moveX = 1;
-		} else if (this.x >= world.getWidth() - 1 && moveX == 1) {
-			moveX = -1;
-		}
+		this.x = moveX;
+		this.y = moveY;
 
-		if (this.y <= 0 && moveY == -1) {
-			moveY = 1;
-		} else if (this.y >= world.getHeight() - 1 && moveY == 1) {
-			moveY = -1;
-		}
-
-		this.x += moveX;
-		this.y += moveY;
 	}
 
-	public void eat(Organism organism) {
+	public synchronized void eat(Organism organism) {
 		Plant plant = (Plant) organism;
 		if (plant.isAlive()) {
 			int plantEnergy = plant.beEaten();

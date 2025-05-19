@@ -15,7 +15,7 @@ public class World implements Serializable {
 	 * NEED to implement weather events ASAP
 	 */
 
-	private static final long serialVersionUID = 658023946262118355L;	
+	private static final long serialVersionUID = 658023946262118355L;
 	public static final int DEFAULT_WIDTH = 100;
 	public static final int DEFAULT_HEIGHT = 100;
 
@@ -79,10 +79,10 @@ public class World implements Serializable {
 		}
 	}
 
-	public void updateSimulation() { // TODO: Check crash here
+	public synchronized void updateSimulation() { // TODO: Check crash here
 		List<Organism> deadOrganisms = new ArrayList<Organism>();
 //		List<Plant> plantsToTransform = new ArrayList<Plant>();
-		
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				this.grid[x][y].update();
@@ -93,10 +93,8 @@ public class World implements Serializable {
 			if (!organism.isAlive()) {
 				if (organism instanceof Animal) {
 					animals.remove(organism);
-					System.out.println("An animal died, " + animals.size() + " remaining");
 				} else {
 					plants.remove(organism);
-					System.out.println("A plant died, " + plants.size() + " remaining");
 				}
 				deadOrganisms.add(organism);
 			}
@@ -104,17 +102,23 @@ public class World implements Serializable {
 			organism.update();
 		}
 
-		organisms.removeAll(deadOrganisms);
-
 		for (Organism organism : deadOrganisms) {
 			grid[organism.getX()][organism.getY()].removeOrganism(organism);
+			organisms.remove(organism);
 		}
 
 		// TODO: add new organisms
 	}
 
-	public Organism getOrganismOn(int width, int height) {
-		return grid[width][height].getOrganism();
+	public synchronized Organism getOrganismOn(int width, int height) {
+		try {
+			return grid[width][height].getOrganism();
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			System.err.println("X: " + width + ", Y: " + height);
+			ex.printStackTrace();
+			System.exit(0);
+			return null;
+		}
 	}
 
 	public boolean isPositionValid(int width, int height) {
@@ -129,14 +133,12 @@ public class World implements Serializable {
 		return grid[width][height].isEmpty();
 	}
 
-	public void addOrganism(Organism organism) {
+	public synchronized void addOrganism(Organism organism) {
 		grid[organism.getX()][organism.getY()].addOrganism(organism);
 		organisms.add(organism);
-		
-		System.out.println("Organisms: " + organisms.size());
 	}
 
-	public void moveOrganismOnGrid(Organism organism, int previousWidth, int previousHeight, int newWidth,
+	public synchronized void moveOrganismOnGrid(Organism organism, int previousWidth, int previousHeight, int newWidth,
 			int newHeight) {
 		grid[previousWidth][previousHeight].removeOrganism(organism);
 		grid[newWidth][newHeight].addOrganism(organism);
@@ -153,7 +155,7 @@ public class World implements Serializable {
 	public List<Organism> getOrganisms() {
 		return this.organisms;
 	}
-	
+
 	public Field getFieldAt(int x, int y) {
 		return grid[x][y];
 	}

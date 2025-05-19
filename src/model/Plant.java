@@ -2,6 +2,8 @@ package model;
 
 import java.util.Random;
 
+import javafx.application.Platform;
+
 public class Plant extends Organism {
 
 	private static final int INITIAL_ENERGY = 5;
@@ -23,7 +25,7 @@ public class Plant extends Organism {
 	}
 
 	@Override
-	public void update() {
+	public synchronized void update() {
 		if (this.energy < MAX_ENERGY) {
 			this.energy += GROWTH_RATE;
 			if (energy > MAX_ENERGY) {
@@ -35,24 +37,22 @@ public class Plant extends Organism {
 			if (random.nextDouble() < SEED_CHANCE) {
 				energy -= SEED_COST;
 
-				int randX = random.nextInt(2) + 1;
-				int randY = random.nextInt(2) + 1;
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						int randX = 0;
+						int randY = 0;
 
-				do {
-					if (random.nextBoolean()) {
-						randX = this.x + randX;
-					} else {
-						randX = this.x - randX;
+						do {
+							int[] newCoords = moveCoordinates(x, y, random, 5);
+							randX = newCoords[0];
+							randY = newCoords[1];
+						} while (!world.isPositionValid(randX, randY));
+
+
+						world.getFieldAt(randX, randY).putSeed();
 					}
-
-					if (random.nextBoolean()) {
-						randY = this.y + randY;
-					} else {
-						randY = this.x - randY;
-					}
-				} while (!world.isPositionValid(randX, randY));
-
-				world.getFieldAt(randX, randY).putSeed();
+				});
 			}
 		}
 	}

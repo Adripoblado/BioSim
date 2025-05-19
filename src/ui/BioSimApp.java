@@ -88,20 +88,23 @@ public class BioSimApp extends Application {
 		HBox boxControls = new HBox(10, resumePauseButton, resetButton);
 		root.setBottom(boxControls);
 
-		gameLoop = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				if (now - lastUpdate >= UPDATE_NANO_GAP) {
-					System.out.println("Before " + lastUpdate);
-					if (simulator.isExecuting()) {
-						simulator.step();
-						updateUI();
+		new Thread() {
+			public void run() {
+				gameLoop = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						if (now - lastUpdate >= UPDATE_NANO_GAP) {
+							if (simulator.isExecuting()) {
+								simulator.step();
+								updateUI();
+							}
+							lastUpdate = now;
+						}
 					}
-					lastUpdate = now;
-					System.out.println("After " + lastUpdate);
-				}
+				};
 			}
-		};
+		}.start();
+		
 
 		Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEHGHT);
 		primaryStage.setScene(scene);
@@ -115,7 +118,7 @@ public class BioSimApp extends Application {
 		updateUI();
 	}
 
-	public void updateUI() { // TODO: Check crash here 2
+	public synchronized void updateUI() { // TODO: Check crash here 2
 		if (simulator == null || simulator.getWorld() == null) {
 			gc.setFill(Color.LIGHTGRAY);
 			gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());

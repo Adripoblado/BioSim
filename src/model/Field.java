@@ -34,6 +34,7 @@ public class Field {
 	private final double PLANT_HUMIDITY_BEGINNIGN;
 	private final double NUTRIENT_REGENERATION_RATE;
 	private final double PLANT_NUTRIENT_CONSUMPTION_FACTOR;
+	private final double MAX_NUTRIENT;
 //	private final double TERRAIN_HEIGHT;
 
 	private Random random;
@@ -51,9 +52,10 @@ public class Field {
 		this.PLANT_HUMIDITY_BEGINNIGN = random.nextDouble();
 		this.NUTRIENT_REGENERATION_RATE = random.nextDouble();
 		this.PLANT_NUTRIENT_CONSUMPTION_FACTOR = random.nextDouble();
+		this.MAX_NUTRIENT = random.nextInt(100) + 100;
 	}
 
-	public boolean addOrganism(Organism organism) {
+	public synchronized boolean addOrganism(Organism organism) {
 		if (organism instanceof Plant) {
 			this.currentPlant = (Plant) organism;
 			return true;
@@ -65,19 +67,19 @@ public class Field {
 		}
 	}
 
-	public boolean removeOrganism(Organism organism) {
+	public synchronized boolean removeOrganism(Organism organism) {
 		if (organism instanceof Plant) {
-			this.currentPlant = (Plant) organism;
+			this.currentPlant = null;
 			return true;
 		} else if (organism instanceof Animal) {
-			this.currentAnimal = (Animal) organism;
+			this.currentAnimal = null;
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public void update() {
+	public synchronized void update() {
 		regenerateNutrients();
 		// TODO: humidity change depending on weather > changeHumidity();
 
@@ -88,13 +90,14 @@ public class Field {
 				Plant newPlant = new Plant(this.world, this.x, this.y, true);
 				this.addOrganism(newPlant);
 				world.addOrganism(newPlant);
+				this.currentPlant = newPlant;
 			}
 		}
 	}
 
 	public double calculatePlantGenerationProbability() {
 		if (hasSeed) {
-			return BASE_FERTILITY * 0.02 /* humidityLevel */* nutrientLevel;
+			return BASE_FERTILITY * 0.01 /* humidityLevel */ * nutrientLevel;
 		} else {
 			return 0.0;
 		}
@@ -145,11 +148,17 @@ public class Field {
 	}
 
 	public void regenerateNutrients() {
-		this.nutrientLevel += NUTRIENT_REGENERATION_RATE;
+		if (this.nutrientLevel < MAX_NUTRIENT) {
+			this.nutrientLevel += NUTRIENT_REGENERATION_RATE;
+		} else {
+			this.nutrientLevel = MAX_NUTRIENT;
+		}
 	}
 
 	public void putSeed() {
-		this.hasSeed = true;
+		if (!hasSeed) {
+			this.hasSeed = true;
+		}
 	}
 
 	public TerrainType getTerrainType() {

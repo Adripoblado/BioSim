@@ -53,11 +53,11 @@ public class World implements Serializable {
 		}
 
 		for (int n = 0; n < numPlants; n++) {
-			String coordinates = availableFields.get(random.nextInt(availableFields.size())).getCoordinates();
-			int width = Integer.parseInt(coordinates.split("-")[0]);
+			Field field = availableFields.get(random.nextInt(availableFields.size()));
+			String coordinates = field.getCoordinates();			int width = Integer.parseInt(coordinates.split("-")[0]);
 			int height = Integer.parseInt(coordinates.split("-")[1]);
 
-			availableFields.remove(coordinates);
+			availableFields.remove(field);
 
 			Plant plant = new Plant(this, width, height, false);
 			grid[width][height].addOrganism(plant);
@@ -66,11 +66,12 @@ public class World implements Serializable {
 		}
 
 		for (int n = 0; n < numAnimals; n++) {
-			String coordinates = availableFields.get(random.nextInt(availableFields.size())).getCoordinates();
+			Field field = availableFields.get(random.nextInt(availableFields.size()));
+			String coordinates = field.getCoordinates();
 			int width = Integer.parseInt(coordinates.split("-")[0]);
 			int height = Integer.parseInt(coordinates.split("-")[1]);
 
-			availableFields.remove(coordinates);
+			availableFields.remove(field);
 
 			Animal animal = new Animal(this, width, height);
 			grid[width][height].addOrganism(animal);
@@ -79,9 +80,8 @@ public class World implements Serializable {
 		}
 	}
 
-	public synchronized void updateSimulation() { // TODO: Check crash here
+	public synchronized void updateSimulation() { 	
 		List<Organism> deadOrganisms = new ArrayList<Organism>();
-//		List<Plant> plantsToTransform = new ArrayList<Plant>();
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -110,7 +110,7 @@ public class World implements Serializable {
 		// TODO: add new organisms
 	}
 
-	public synchronized Organism getOrganismOn(int width, int height) {
+	public synchronized Organism getOrganismAt(int width, int height) {
 		try {
 			return grid[width][height].getOrganism();
 		} catch (ArrayIndexOutOfBoundsException ex) {
@@ -146,6 +146,14 @@ public class World implements Serializable {
 			int newHeight) {
 		grid[previousWidth][previousHeight].removeOrganism(organism);
 		grid[newWidth][newHeight].addOrganism(organism);
+	}
+	
+	public boolean isOrganismPresent(Organism organism, int x, int y) {
+		if (organism instanceof Plant) {
+			return getPlantAt(x, y) == organism;
+		} else {
+			return getOrganismAt(x, y) == organism;
+		}
 	}
 
 	public int getWidth() {

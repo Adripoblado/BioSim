@@ -1,6 +1,5 @@
 package core;
 
-import javafx.application.Platform;
 import model.World;
 import ui.BioSimApp;
 

@@ -23,40 +23,6 @@ public abstract class Organism {
 		// TODO ???
 	}
 
-//	Adjust range to 3 or 5 in order to have a 1 or 2 field movement range
-//	public int[] moveCoordinates(int x, int y, Random random, int range) {
-//		int newX = 0;
-//
-//		if (x <= 2) {
-//			newX = generateMove(random, range, 0);
-//		} else if (x >= world.getWidth() - 2) {
-//			newX = generateMove(random, range, 4);
-//		} else {
-//			newX = generateMove(random, range, 2);
-//		}
-//
-//		int newY = 0;
-//		
-//		if (y <= 2) {
-//			newY = generateMove(random, range, 0);
-//		} else if (y >= world.getHeight() - 2) {
-//			newY = generateMove(random, range, 4);
-//		} else {
-//			newY = generateMove(random, range, 2);
-//		}
-//		
-//		return new int[] { x + newX, y + newY };
-//	}
-//
-//	private int generateMove(Random random, int range, int withdraw) {
-//		int move;
-//		do {
-//			move = random.nextInt(range) - withdraw;
-//		} while (move == 0);
-//
-//		return move;
-//	}
-	
 	public int[] moveCoordinates(int x, int y, Random random, int range) {
 	    int newX = generateBalancedMove(random, range, x, world.getWidth());
 	    int newY = generateBalancedMove(random, range, y, world.getHeight());
@@ -65,11 +31,8 @@ public abstract class Organism {
 	}
 
 	private int generateBalancedMove(Random random, int range, int coord, int max) {
-	    int move;
-
 	    List<Integer> posibles = new ArrayList<>();
 
-	    // Generar movimientos entre -range y +range (excepto 0)
 	    for (int i = -range; i <= range; i++) {
 	        if (i == 0) continue;
 	        int nuevaCoord = coord + i;
@@ -78,7 +41,6 @@ public abstract class Organism {
 	        }
 	    }
 
-	    // Si no hay movimientos posibles, quedarte en el sitio (o lanzar error según tu lógica)
 	    if (posibles.isEmpty()) return 0;
 
 	    return posibles.get(random.nextInt(posibles.size()));

@@ -23,7 +23,7 @@ public class World implements Serializable {
 	private Field[][] grid;
 	private List<Organism> organisms;
 	private List<Plant> plants;
-	private List<Animal> animals;
+	private List<Animal> animals, newAnimals;
 	private Random random;
 
 	public World(int width, int height) {
@@ -39,6 +39,7 @@ public class World implements Serializable {
 		this.organisms = new ArrayList<Organism>();
 		this.plants = new ArrayList<Plant>();
 		this.animals = new ArrayList<Animal>();
+		this.newAnimals = new ArrayList<Animal>();
 	}
 
 	public void populate(int numPlants, int numAnimals) {
@@ -107,7 +108,9 @@ public class World implements Serializable {
 			organisms.remove(organism);
 		}
 
-		// TODO: add new organisms
+		animals.addAll(newAnimals);
+		organisms.addAll(newAnimals); 
+		newAnimals.clear();
 	}
 
 	public synchronized Organism getOrganismAt(int width, int height) {
@@ -119,6 +122,10 @@ public class World implements Serializable {
 			System.exit(0);
 			return null;
 		}
+	}
+	
+	public synchronized Animal getAnimalAt(int x, int y) {
+		return grid[x][y].getAnimal();
 	}
 	
 	public synchronized Plant getPlantAt(int x, int y) {
@@ -137,9 +144,14 @@ public class World implements Serializable {
 		return grid[width][height].isEmpty();
 	}
 
-	public synchronized void addOrganism(Organism organism) {
-		grid[organism.getX()][organism.getY()].addOrganism(organism);
-		organisms.add(organism);
+	public synchronized void addPlant(Plant plant) {
+		grid[plant.getX()][plant.getY()].addOrganism(plant);
+		organisms.add(plant);
+	}
+	
+	public synchronized void addAnimal(Animal animal) {
+		grid[animal.getX()][animal.getY()].addOrganism(animal);
+		newAnimals.add(animal);
 	}
 
 	public synchronized void moveOrganismOnGrid(Organism organism, int previousWidth, int previousHeight, int newWidth,

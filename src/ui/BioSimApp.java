@@ -20,7 +20,9 @@ public class BioSimApp extends Application {
 
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEHGHT = 800;
-	private static final int CELL_SIZE = 10;
+	private static final int CELL_SIZE = 4;
+	private static final int PLANT_AMOUNT = 100;
+	private static final int ANIMAL_AMOUNT = 10;
 
 	private Simulator simulator;
 	private Canvas canvas;
@@ -29,7 +31,7 @@ public class BioSimApp extends Application {
 
 	private long lastUpdate = 0;
 
-	private static final int STEPS_PER_SECOND = 1;
+	private static final int STEPS_PER_SECOND = 16;
 	private static final long UPDATE_NANO_GAP = 1_000_000_000 / STEPS_PER_SECOND;
 
 	public static void main(String[] args) {
@@ -43,7 +45,7 @@ public class BioSimApp extends Application {
 		simulator = new Simulator(this);
 
 		BorderPane root = new BorderPane();
-		canvas = new Canvas(40 * CELL_SIZE, 40 * CELL_SIZE);
+		canvas = new Canvas(World.DEFAULT_WIDTH * CELL_SIZE, World.DEFAULT_HEIGHT * CELL_SIZE);
 		gc = canvas.getGraphicsContext2D();
 		root.setCenter(canvas);
 
@@ -55,7 +57,7 @@ public class BioSimApp extends Application {
 				resumePauseButton.setText("Resume");
 			} else {
 				if (simulator.getWorld() == null) {
-					simulator.init(40, 40, 10, 1);
+					simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, PLANT_AMOUNT, ANIMAL_AMOUNT);
 				} else {
 					simulator.resume();
 				}
@@ -72,7 +74,7 @@ public class BioSimApp extends Application {
 			}
 
 			simulator.pause();
-			simulator.init(40, 40, 10, 1);
+			simulator.init(World.DEFAULT_WIDTH, World.DEFAULT_HEIGHT, PLANT_AMOUNT, ANIMAL_AMOUNT);
 			if (!simulator.isExecuting() && simulator.getWorld() != null) {
 				simulator.resume();
 				gameLoop.start();

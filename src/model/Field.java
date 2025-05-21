@@ -89,8 +89,9 @@ public class Field {
 			if (random.nextDouble() < probability) {
 				Plant newPlant = new Plant(this.world, this.x, this.y, true);
 				this.addOrganism(newPlant);
-				world.addOrganism(newPlant);
+				world.addPlant(newPlant);
 				this.currentPlant = newPlant;
+				this.hasSeed = false;
 			}
 		}
 	}

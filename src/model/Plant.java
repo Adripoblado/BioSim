@@ -6,15 +6,16 @@ import javafx.application.Platform;
 
 public class Plant extends Organism {
 
-	private static final int INITIAL_ENERGY = 40;
-	private static final int MAX_ENERGY = 120;
+	private static final int INITIAL_ENERGY = 1;
+	private static final int MAX_ENERGY = 100;
 	private static final int GROWTH_RATE = 1;
-	private static final double SEED_CHANCE = 0.14;
-	private static final double SEED_COST = 50;
+	private static final double SEED_CHANCE = 0.1;
+	private static final double SEED_COST = 60;
 
 	private Random random;
 
 	private boolean fromSeed;
+	private boolean marked;
 
 	public Plant(World world, int x, int y, boolean fromSeed) {
 		super(world, x, y, INITIAL_ENERGY);
@@ -22,6 +23,7 @@ public class Plant extends Organism {
 		this.random = new Random();
 
 		this.fromSeed = fromSeed;
+		this.marked = false;
 	}
 
 	@Override
@@ -57,12 +59,24 @@ public class Plant extends Organism {
 		}
 	}
 
-	public int beEaten() {
+	public synchronized int beEaten() {
 		die();
 		return this.energy;
 	}
 
 	public boolean grownFromSeed() {
 		return this.fromSeed;
+	}
+	
+	public synchronized boolean isMarked() {
+		return this.marked;
+	}
+	
+	public synchronized void mark() {
+		this.marked = true;
+	}
+	
+	public int getEnergy() {
+		return this.energy;
 	}
 }
